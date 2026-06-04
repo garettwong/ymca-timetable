@@ -160,10 +160,10 @@ body{margin:0;font-family:"Segoe UI Variable","Segoe UI",-apple-system,BlinkMacS
     <div class="modal-date" id="eatDate"></div>
     <div class="modal-q">How far do you want to look?</div>
     <div class="dist-opts" id="distOpts">
-      <button type="button" data-r="500">500 m</button>
-      <button type="button" data-r="1000">1 km</button>
-      <button type="button" data-r="2000">2 km</button>
-      <button type="button" data-r="5000">5 km</button>
+      <button type="button" data-r="300">300 m</button>
+      <button type="button" data-r="600">600 m</button>
+      <button type="button" data-r="900">900 m</button>
+      <button type="button" data-r="1200">1200 m</button>
     </div>
     <div class="eat-status" id="eatStatus"></div>
     <div class="eat-results" id="eatResults"></div>
@@ -184,7 +184,7 @@ body{margin:0;font-family:"Segoe UI Variable","Segoe UI",-apple-system,BlinkMacS
   function shuffle(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1)),t=a[i];a[i]=a[j];a[j]=t;}return a;}
   function pretty(s){return (s||'').replace(/[_;]/g,' ').replace(/\b\w/g,function(c){return c.toUpperCase();});}
   function esc(s){return (s+'').replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
-  function dlabel(r){return r>=1000?(r/1000)+' km':r+' m';}
+  function dlabel(r){return r>=1500?(r/1000)+' km':r+' m';}
   document.getElementById('distOpts').addEventListener('click',function(e){var b=e.target.closest('button');if(b)search(parseInt(b.getAttribute('data-r'),10),b);});
   function search(radius,btn){
     resEl.innerHTML='';
