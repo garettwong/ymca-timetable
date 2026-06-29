@@ -101,7 +101,13 @@ body{margin:0;font-family:"Segoe UI Variable","Segoe UI",-apple-system,BlinkMacS
 .chip .l1{gap:2px}.chip .code{font-size:8px}.chip .lsn{font-size:7px}.chip .ppl{font-size:7px;line-height:1.2}
 .cell .eat{font-size:9px;padding:0 1px;opacity:.55}}
 @media print{body{background:#fff}.month,.cls,.stat{box-shadow:none}.note,.eat{display:none}.gridwrap{overflow:visible}.grid{min-width:0}}
-.chip.k0{background:#e7f1fb;border-color:#1565c0;color:#0d3f86}.cls.k0{border-top-color:#1565c0}.cls.k0 .code{color:#0d3f86}.chip.k1{background:#fff1e2;border-color:#e8590c;color:#b5470a}.cls.k1{border-top-color:#e8590c}.cls.k1 .code{color:#b5470a}.chip.k2{background:#e9f7ec;border-color:#2f9e44;color:#1f7a33}.cls.k2{border-top-color:#2f9e44}.cls.k2 .code{color:#1f7a33}.chip.k3{background:#efe9fc;border-color:#7048e8;color:#5733c4}.cls.k3{border-top-color:#7048e8}.cls.k3 .code{color:#5733c4}.chip.k4{background:#e3f7fa;border-color:#0c8599;color:#0a6c7d}.cls.k4{border-top-color:#0c8599}.cls.k4 .code{color:#0a6c7d}.chip.k5{background:#fde8f0;border-color:#e64980;color:#bf2f68}.cls.k5{border-top-color:#e64980}.cls.k5 .code{color:#bf2f68}</style></head><body><div class="wrap">
+.chip.k0{background:#e7f1fb;border-color:#1565c0;color:#0d3f86}.cls.k0{border-top-color:#1565c0}.cls.k0 .code{color:#0d3f86}.chip.k1{background:#fff1e2;border-color:#e8590c;color:#b5470a}.cls.k1{border-top-color:#e8590c}.cls.k1 .code{color:#b5470a}.chip.k2{background:#e9f7ec;border-color:#2f9e44;color:#1f7a33}.cls.k2{border-top-color:#2f9e44}.cls.k2 .code{color:#1f7a33}.chip.k3{background:#efe9fc;border-color:#7048e8;color:#5733c4}.cls.k3{border-top-color:#7048e8}.cls.k3 .code{color:#5733c4}.chip.k4{background:#e3f7fa;border-color:#0c8599;color:#0a6c7d}.cls.k4{border-top-color:#0c8599}.cls.k4 .code{color:#0a6c7d}.chip.k5{background:#fde8f0;border-color:#e64980;color:#bf2f68}.cls.k5{border-top-color:#e64980}.cls.k5 .code{color:#bf2f68}
+/* Today / next-session highlight (auto-centred on open) */
+.aday.is-today,.cell.is-today{box-shadow:inset 0 0 0 2px #0f7d7d;background:#e6f5f6;border-radius:10px}
+.aday.is-next,.cell.is-next{box-shadow:inset 0 0 0 2px #9bd2d6;border-radius:10px}
+.aday.is-today .anum{color:#0f7d7d}
+.aday.is-today .adate::after{content:"TODAY";display:block;font-size:8.5px;font-weight:800;letter-spacing:.5px;color:#0f7d7d;margin-top:2px}
+.aday.is-next .adate::after{content:"NEXT";display:block;font-size:8.5px;font-weight:800;letter-spacing:.5px;color:#5f9aa0;margin-top:2px}</style></head><body><div class="wrap">
 <h1 class="title"><span class="y">YMCA</span> Tutoring Timetable</h1>
 <p class="sub">YMCA team · 6 classes · June – November 2026</p>
 <div class="stats">
@@ -231,6 +237,29 @@ body{margin:0;font-family:"Segoe UI Variable","Segoe UI",-apple-system,BlinkMacS
       return '<div class="eat-card"><div class="nm">'+esc(p.name)+'</div><div class="meta2"><span>'+esc(p.cuisine||'Restaurant')+'</span><span>•</span><span>'+ds+' away</span><a href="'+maps+'" target="_blank" rel="noopener">Open in Maps ↗</a></div></div>';
     }).join('')+'<div class="eat-attr">Place data © OpenStreetMap contributors</div>';
   }
+  /* ---- Auto-jump to today (or next session) and centre it on screen ---- */
+  function isoLocal(d){var z=new Date(d.getTime()-d.getTimezoneOffset()*60000);return z.toISOString().slice(0,10);}
+  function focusToday(){
+    var today=isoLocal(new Date());
+    var nodes=[].slice.call(document.querySelectorAll('[data-date]')).filter(function(n){return n.getClientRects().length>0;});
+    if(!nodes.length)return;
+    var exact=null,next=null,last=null;
+    nodes.forEach(function(n){var d=n.getAttribute('data-date');
+      if(d===today){if(!exact)exact=n;}
+      else if(d>today){if(!next||d<next.getAttribute('data-date'))next=n;}
+      if(!last||d>last.getAttribute('data-date'))last=n;
+    });
+    var hit=exact||next||last;if(!hit)return;
+    var row=hit.closest('.aday')||hit.closest('.cell')||hit;
+    var prev=document.querySelectorAll('.is-today,.is-next');
+    for(var i=0;i<prev.length;i++)prev[i].classList.remove('is-today','is-next');
+    row.classList.add(exact?'is-today':'is-next');
+    try{row.scrollIntoView({block:'center',inline:'nearest'});}catch(e){row.scrollIntoView();}
+  }
+  function runFocus(){focusToday();setTimeout(focusToday,60);setTimeout(focusToday,250);}
+  if(document.readyState!=='loading')runFocus();else document.addEventListener('DOMContentLoaded',runFocus);
+  window.addEventListener('load',function(){setTimeout(focusToday,80);});
+  window.addEventListener('orientationchange',function(){setTimeout(focusToday,300);});
 })();
 </script>
 </body></html>
