@@ -23,20 +23,25 @@
   <script>
   (function(){
     var status=document.getElementById('status');
-    var requested=(new URLSearchParams(location.search).get('version')||'').toLowerCase();
     var jsonURL=new URL('../latest.json',location.href);jsonURL.searchParams.set('_',Date.now());
-    function openTarget(data){
+    function loadTarget(data){
       if(!data||!/^v\d+$/.test(data.version||'')||!/^v\d+\.html$/.test(data.path||''))throw new Error('Invalid latest release data');
-      var version=/^v\d+$/.test(requested)?requested:data.version;
       var target=new URL('../'+data.path,location.href);
-      target.searchParams.set('version',version);
-      target.searchParams.set('release',data.release||data.version);
-      if(location.hash)target.hash=location.hash;
-      location.replace(target.href);
+      target.searchParams.set('_',Date.now());
+      return fetch(target.href,{cache:'no-store',headers:{'Cache-Control':'no-cache'}})
+        .then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.text();})
+        .then(function(html){
+          if(!/<head(?:\s[^>]*)?>/i.test(html)||!/<\/html>/i.test(html))throw new Error('Invalid timetable document');
+          var baseURL=new URL('../',location.href).href.replace(/"/g,'&quot;');
+          html=html.replace(/<head(\s[^>]*)?>/i,function(match,attrs){return '<head'+(attrs||'')+'><base href="'+baseURL+'">';});
+          document.open();
+          document.write(html);
+          document.close();
+        });
     }
     fetch(jsonURL.href,{cache:'no-store',headers:{'Cache-Control':'no-cache'}})
       .then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.json();})
-      .then(openTarget)
+      .then(loadTarget)
       .catch(function(){status.textContent='The newest-version check could not finish. Use the V6 link below and try again later.';});
   })();
   </script>

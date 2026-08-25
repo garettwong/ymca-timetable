@@ -261,7 +261,10 @@ body.view-horizontal .cell .eat{font-size:9px;padding:0 1px;opacity:.55}}
   else if(currentVersion==='v2')releaseNote.innerHTML='<b>V2 PFSA update:</b> PFSA classes on Mondays and Fridays now show <b>Bingo</b> instead of Cman, except <b>21 Aug</b>, which remains Cman. Lessons 1–6 also retain the confirmed <b>商業溝通技巧課程</b> correction. Changed entries are marked <b>Updated</b>.';
   else releaseNote.innerHTML='<b>PFSA3 update:</b> Lessons 1–6 (29 Jun, 30 Jun, 6 Jul, 10 Jul, 13 Jul and 17 Jul) are confirmed as <b>商業溝通技巧課程</b> from the latest YMCA calendar. Corrected entries are marked <b>Updated</b>. The other cohorts remain from the master timeline (provisional).';
   versionSelect.addEventListener('change',function(){
-    var next=new URL(location.href);next.searchParams.set('version',this.value);location.href=next.toString();
+    var next=new URL(location.href);
+    if(this.value==='v6')next.searchParams.delete('version');
+    else next.searchParams.set('version',this.value);
+    location.href=next.toString();
   });
 
   /* Accessible mobile layout switch. This changes the page layout; browsers cannot force device rotation. */

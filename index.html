@@ -17,29 +17,17 @@
 <body>
   <main class="card" aria-live="polite">
     <div><span class="brand">YMCA</span> Tutoring Timetable</div>
-    <div class="status" id="status">Checking the newest published version…</div>
-    <a class="fallback" id="fallback" href="v6.html?version=v6&amp;release=20260825-v6">Open V6 if this page does not continue</a>
+    <div class="status" id="status">Opening the permanent latest timetable…</div>
+    <a class="fallback" id="fallback" href="latest/">Open the always-current timetable</a>
   </main>
   <script>
   (function(){
-    var status=document.getElementById('status');
-    var requested=(new URLSearchParams(location.search).get('version')||'').toLowerCase();
-    var jsonURL=new URL('latest.json',location.href);jsonURL.searchParams.set('_',Date.now());
-    function openTarget(data){
-      if(!data||!/^v\d+$/.test(data.version||'')||!/^v\d+\.html$/.test(data.path||''))throw new Error('Invalid latest release data');
-      var version=/^v\d+$/.test(requested)?requested:data.version;
-      var target=new URL(data.path,location.href);
-      target.searchParams.set('version',version);
-      target.searchParams.set('release',data.release||data.version);
-      if(location.hash)target.hash=location.hash;
-      location.replace(target.href);
-    }
-    fetch(jsonURL.href,{cache:'no-store',headers:{'Cache-Control':'no-cache'}})
-      .then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.json();})
-      .then(openTarget)
-      .catch(function(){status.textContent='The newest-version check could not finish. Use the V6 link below and try again later.';});
+    var target=new URL('latest/',location.href);
+    target.search=location.search;
+    target.hash=location.hash;
+    location.replace(target.href);
   })();
   </script>
-  <noscript><p><a href="v6.html?version=v6&amp;release=20260825-v6">Open YMCA Timetable V6</a></p></noscript>
+  <noscript><p><a href="latest/">Open the always-current YMCA Timetable</a></p></noscript>
 </body>
 </html>
