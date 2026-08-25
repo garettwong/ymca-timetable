@@ -1,7 +1,8 @@
 {
   "name": "YMCA Tutoring Timetable",
   "short_name": "YMCA Timetable",
-  "start_url": "./v5.html?version=v5&release=20260825-v5",
+  "id": "./latest/",
+  "start_url": "./latest/",
   "scope": "./",
   "display": "standalone",
   "background_color": "#eef1f6",
